@@ -10,10 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -87,8 +84,37 @@ public class AnimeController {
         whistlist.setImageFilename(storageFileName);
 
         animeRepository.save(whistlist);
-
-
         return "redirect:/anime";
+    }
+
+    @GetMapping ("/edit")
+    public String showEditPage (Model model, @RequestParam int id){
+        try {
+            WishList wishList = animeRepository.findById(id).get();
+            model.addAttribute("anime",wishList);
+//            model.addAttribute("imageFileName", wishList.getImageFileName());
+
+
+            model.addAttribute("imageFilename", wishList.getImageFilename());
+            AnimeDto animeDto =new AnimeDto();
+            animeDto.setName(wishList.getName());
+            animeDto.setGenre(wishList.getGenre());
+            animeDto.setEpisode((float) wishList.getEposide());
+            animeDto.setDirector(wishList.getDirector());
+//            animeDto.setImageFile(wishList.getImageFilename()); // Assuming getImageFilename() returns the image file path or URL
+
+
+
+            model.addAttribute("wishList", wishList);
+            model.addAttribute("animeDto", animeDto);
+
+
+        }
+        catch (Exception ex){
+            System.out.println("Exception: "+ex.getMessage());
+            return "redirect:/anime";
+        }
+        return "anime/editAnime";
+
     }
 }
