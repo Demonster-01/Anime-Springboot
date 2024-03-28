@@ -9,7 +9,7 @@
 <body>
 <div class="container">
   <h1 class="text-center my-4">Browse Anime</h1>
-  <a class="btn btn-primary mb-3" href="/anime/addAnime">Create Anime</a>
+  <a class="btn btn-primary mb-3" href="/anime/add">Create Anime</a>
   <table class="table">
     <thead>
     <tr>
@@ -18,9 +18,9 @@
       <th>Director</th>
       <th>Episode</th>
       <th>Genre</th>
-      <th>Studio</th>
+<!--      <th>Studio</th>-->
       <th>Image</th>
-      <th>Created at</th>
+<!--      <th>Created at</th>-->
       <th>Action</th>
     </tr>
     </thead>
@@ -31,11 +31,11 @@
       <td th:text="${anime.director}"></td>
       <td th:text="${anime.eposide}"></td>
       <td th:text="${anime.genre}"></td>
-      <td th:text="${anime.studio}"></td>
+<!--      <td th:text="${anime.studio}"></td>-->
       <td>
         <img th:src="@{'/images/' + ${anime.imageFilename}}" alt="..." width="100">
       </td>
-      <td th:text="${#dates.format(anime.aired, 'yyyy-MM-dd')}"></td>
+<!--      <td th:text="${#dates.format(anime.aired, 'yyyy-MM-dd')}"></td>-->
       <td style="white-space: nowrap">
         <a class="btn btn-primary btn-sm" th:href="@{/animes/edit(id=${anime.id})}">Edit</a>
         <a class="btn btn-danger btn-sm" th:href="@{/animes/delete(id=${anime.id})}" onclick="return confirm('Are you sure?')">Delete</a>

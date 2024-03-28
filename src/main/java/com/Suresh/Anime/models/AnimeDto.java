@@ -2,7 +2,6 @@ package com.Suresh.Anime.models;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
 public class AnimeDto {
@@ -53,7 +52,7 @@ public class AnimeDto {
         return studio;
     }
 
-    public void setStudio(String studio) {
+    public void setStudio() {
         this.studio = studio;
     }
 

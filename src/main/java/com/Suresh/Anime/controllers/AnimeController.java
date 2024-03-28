@@ -14,9 +14,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.*;
+//import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.util.List;
-
 @Controller
 @RequestMapping("/anime")
 public class AnimeController {
@@ -45,14 +51,44 @@ public class AnimeController {
 
     @PostMapping("/add")
     public String addAnime(
-            @Valid @ModelAttribute AnimeDto animeDto, BindingResult result) {
-        if (animeDto.getImageFile () . isEmpty())
-        {
-        result.addError (new FieldError("productDto", "imageFile", "The image file field is empty"));
+            @Valid @ModelAttribute AnimeDto animeDto, BindingResult result) throws IOException {
+        if (animeDto.getImageFile().isEmpty()) {
+            result.addError(new FieldError("productDto", "imageFile", "The image file field is empty"));
         }
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             return "anime/addAnime";
         }
+
+
+        // save image file
+        MultipartFile image = animeDto.getImageFile();
+        Date createdAt = new Date();
+        String storageFileName = createdAt.getTime() + "_" + image.getOriginalFilename();
+        try {
+            String uploadDir = "public/images/";
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) { // Corrected the syntax error here
+                Files.createDirectories(uploadPath);
+            }
+            try (InputStream inputStream = image.getInputStream()) {
+                Files.copy(inputStream, Paths.get(uploadDir + storageFileName),
+                        StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (
+                Exception ex) {
+            System.out.println("Exception: " + ex.getMessage());
+        }
+
+        WishList whistlist = new WishList();
+        whistlist.setName(animeDto.getName());
+        whistlist.setGenre(animeDto.getGenre());
+        whistlist.setEposide(animeDto.getEpisode());
+        whistlist.setDirector(animeDto.getDirector());
+        whistlist.setImageFilename(storageFileName);
+
+        animeRepository.save(whistlist);
+
+
         return "redirect:/anime";
     }
 }
